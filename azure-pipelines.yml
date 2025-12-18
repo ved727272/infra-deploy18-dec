@@ -19,6 +19,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
               backendAzureRmUseEntraIdForAuthentication: false
               backendServiceArm: 'todosvc'
               backendAzureRmStorageAccountName: 'stgacforall'
@@ -29,6 +30,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
               environmentServiceNameAzureRM: 'todosvc'
       - job: manualvalidation
         displayName: Manual Approval
@@ -46,6 +48,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
               backendAzureRmUseEntraIdForAuthentication: false
               backendServiceArm: 'todosvc'
               backendAzureRmStorageAccountName: 'stgacforall'
@@ -56,4 +59,5 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
               environmentServiceNameAzureRM: 'todosvc'
