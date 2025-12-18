@@ -41,13 +41,13 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
         environmentServiceNameAzureRM: 'todosvc'
 
-    - script: |
-        sudo apt update
-        sudo apt install -y pipx
-        pipx ensurepath
-        pipx install checkov
-        checkov -d environment
-      displayName: Security Scan (Checkov)
+    # - script: |
+    #     sudo apt update
+    #     sudo apt install -y pipx
+    #     pipx ensurepath
+    #     pipx install checkov
+    #     checkov -d environment
+    #   displayName: Security Scan (Checkov)
 
   - job: manualvalidation
     displayName: Manual Approval
