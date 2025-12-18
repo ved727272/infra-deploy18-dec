@@ -42,10 +42,7 @@ stages:
         environmentServiceNameAzureRM: 'todosvc'
 
     - script: |
-        sudo apt update
-        sudo apt install -y pipx
-        pipx ensurepath
-        pipx install checkov
+        python3 -m pip install checkov
         checkov -d environment/dev
       displayName: Security Scan (Checkov)
 
