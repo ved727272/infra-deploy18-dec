@@ -20,8 +20,6 @@ stages:
               tflint --init
               tflint
       
-
-
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
