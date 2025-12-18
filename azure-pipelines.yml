@@ -80,9 +80,10 @@ stages:
         backendAzureRmContainerName: 'mycontainer'
         backendAzureRmKey: 'terraform.tfstate'
 
-    # - task: TerraformTask@5
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'apply'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-    #     environmentServiceNameAzureRM: 'todosvc'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'todosvc'
+        
