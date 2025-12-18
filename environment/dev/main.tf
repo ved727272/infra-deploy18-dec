@@ -1,12 +1,12 @@
 module "rg" {
-  source = "../modules/azurerm_resource_group"
+  source = "../../modules/azurerm_resource_group"
   resource_group_name = "rg_brijesh_18"
   location = "westus"
   
 }
 module "vnet" {
   depends_on = [ module.rg ]
-  source = "../modules/azurerm_virtual_network"
+  source = "../../modules/azurerm_virtual_network"
   resource_group_name = "rg_brijesh_18"
   location = "westus"
   vnet_name = "vnet_brijesh_28"
@@ -15,7 +15,7 @@ module "vnet" {
 
 module "subnet" {
   depends_on = [ module.vnet ]
-  source = "../modules/azurerm_subnet"
+  source = "../../modules/azurerm_subnet"
   resource_group_name = "rg_brijesh_18"
   vnet_name = "vnet_brijesh_28"
   subnet_name = "subnet_brijesh_18"
@@ -25,7 +25,7 @@ module "subnet" {
 
 module "pip" {
   depends_on = [ module.rg ]
-  source = "../modules/azurerm_public_ip"
+  source = "../../modules/azurerm_public_ip"
   resource_group_name = "rg_brijesh_18"
   location = "westus"
   pip_name = "pip_brijesh_18"
