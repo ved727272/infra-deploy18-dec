@@ -8,7 +8,7 @@ stages:
   - stage: terraform
     displayName: terraform
     jobs:
-      - job: terraforminitplanapply
+      - job: terraforminitplan
         displayName: initplanapply
         steps:
           - task: TerraformInstaller@1
@@ -46,6 +46,8 @@ stages:
               environmentServiceNameAzureRM: 'todosvc'
       - job: manualvalidation
         displayName: Manual Approval
+        dependsOn: terraforminitplan
+        condition: succeeded('terraforminitplan')
         pool: server   # IMPORTANT
         steps:
           - task: ManualValidation@1
@@ -55,6 +57,9 @@ stages:
               instructions: 'Please approve to continue deployment'
               onTimeout: 'reject'
       - job: apply
+        displayName: Terraform Apply
+        dependsOn: manualvalidation
+        condition: succeeded('manualvalidation')
         steps:
           - task: TerraformTask@5
             inputs:
