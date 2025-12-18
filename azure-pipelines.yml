@@ -21,14 +21,14 @@ stages:
         curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
         tflint --init
         tflint
-      workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
+      workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
       displayName: Terraform Lint
 
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
         backendServiceArm: 'todosvc'
         backendAzureRmStorageAccountName: 'stgacforall'
         backendAzureRmContainerName: 'mycontainer'
@@ -38,7 +38,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
         environmentServiceNameAzureRM: 'todosvc'
 
     - script: |
@@ -71,7 +71,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
         backendServiceArm: 'todosvc'
         backendAzureRmStorageAccountName: 'stgacforall'
         backendAzureRmContainerName: 'mycontainer'
@@ -81,5 +81,5 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
         environmentServiceNameAzureRM: 'todosvc'
