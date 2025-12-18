@@ -21,14 +21,14 @@ stages:
         curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
         tflint --init
         tflint
-      workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
       displayName: Terraform Lint
 
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         backendServiceArm: 'todosvc'
         backendAzureRmStorageAccountName: 'stgacforall'
         backendAzureRmContainerName: 'mycontainer'
@@ -38,7 +38,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         environmentServiceNameAzureRM: 'todosvc'
 
     # - script: |
@@ -46,7 +46,7 @@ stages:
     #     sudo apt install -y pipx
     #     pipx ensurepath
     #     pipx install checkov
-    #     checkov -d environment
+    #     checkov -d environment/dev
     #   displayName: Security Scan (Checkov)
 
   - job: manualvalidation
@@ -74,15 +74,15 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         backendServiceArm: 'todosvc'
         backendAzureRmStorageAccountName: 'stgacforall'
         backendAzureRmContainerName: 'mycontainer'
         backendAzureRmKey: 'terraform.tfstate'
 
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment'
-        environmentServiceNameAzureRM: 'todosvc'
+    # - task: TerraformTask@5
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'apply'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    #     environmentServiceNameAzureRM: 'todosvc'
