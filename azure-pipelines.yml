@@ -15,10 +15,10 @@ stages:
             inputs:
               terraformVersion: '1.14.3'
           - script: |
-            displayName: Terraform Lint
               curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
               tflint --init
               tflint
+            displayName: Terraform Lint  
       
           - task: TerraformTask@5
             inputs:
@@ -32,9 +32,9 @@ stages:
               backendAzureRmKey: 'terraform.tfstate'
 
           - script: |
-            displayName: Security Scan
               pip install checkov
               checkov -d .
+            displayName: Security Scan  
                 
           - task: TerraformTask@5
             inputs:
