@@ -5,74 +5,81 @@ pool:
   name: linux-hosted-agent
 
 stages:
-  - stage: terraform
-    displayName: terraform
-    jobs:
-      - job: terraforminitplan
-        displayName: initplanapply
-        steps:
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: '1.14.3'
-          - script: |
-              curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-              tflint --init
-              tflint
-            displayName: Terraform Lint  
-      
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
-              backendAzureRmUseEntraIdForAuthentication: false
-              backendServiceArm: 'todosvc'
-              backendAzureRmStorageAccountName: 'stgacforall'
-              backendAzureRmContainerName: 'mycontainer'
-              backendAzureRmKey: 'terraform.tfstate'
+- stage: terraform
+  displayName: Terraform
+  jobs:
 
-          - script: |
-              pip install checkov
-              checkov -d .
-            displayName: Security Scan  
-                
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'plan'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
-              environmentServiceNameAzureRM: 'todosvc'
-      - job: manualvalidation
-        displayName: Manual Approval
-        dependsOn: terraforminitplan
-        condition: succeeded('terraforminitplan')
-        pool: server   # IMPORTANT
-        steps:
-          - task: ManualValidation@1
-            inputs:
-              notifyUsers: |
-                brijesh@gmail.com
-              instructions: 'Please approve to continue deployment'
-              onTimeout: 'reject'
-      - job: apply
-        displayName: Terraform Apply
-        dependsOn: manualvalidation
-        condition: succeeded('manualvalidation')
-        steps:
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
-              backendAzureRmUseEntraIdForAuthentication: false
-              backendServiceArm: 'todosvc'
-              backendAzureRmStorageAccountName: 'stgacforall'
-              backendAzureRmContainerName: 'mycontainer'
-              backendAzureRmKey: 'terraform.tfstate'
+  - job: terraforminitplan
+    displayName: Init & Plan
+    steps:
 
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'apply'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
-              environmentServiceNameAzureRM: 'todosvc'
+    - script: |
+        terraform version
+      displayName: Verify Terraform
+
+    - script: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        tflint --init
+        tflint
+      workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev/
+      displayName: Terraform Lint
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
+        backendServiceArm: 'todosvc'
+        backendAzureRmStorageAccountName: 'stgacforall'
+        backendAzureRmContainerName: 'mycontainer'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
+        environmentServiceNameAzureRM: 'todosvc'
+
+    - script: |
+        pip install checkov
+        checkov -d environment/dev
+      displayName: Security Scan
+
+  - job: manualvalidation
+    displayName: Manual Approval
+    dependsOn: terraforminitplan
+    condition: succeeded()
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: |
+          brijesh@gmail.com
+        instructions: 'Please approve to continue deployment'
+        onTimeout: 'reject'
+
+  - job: apply
+    displayName: Terraform Apply
+    dependsOn: manualvalidation
+    condition: succeeded()
+    pool:
+      name: linux-hosted-agent
+    steps:
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
+        backendServiceArm: 'todosvc'
+        backendAzureRmStorageAccountName: 'stgacforall'
+        backendAzureRmContainerName: 'mycontainer'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev/'
+        environmentServiceNameAzureRM: 'todosvc'
