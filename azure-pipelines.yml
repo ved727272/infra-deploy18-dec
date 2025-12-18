@@ -31,10 +31,15 @@ stages:
               command: 'plan'
               environmentServiceNameAzureRM: 'todosvc'
       - job: manualvalidation
+        displayName: Manual Approval
+        pool: server   # IMPORTANT
         steps:
           - task: ManualValidation@1
             inputs:
-              notifyUsers: 'brijesh'
+              notifyUsers: |
+                brijesh@gmail.com
+              instructions: 'Please approve to continue deployment'
+              onTimeout: 'reject'
       - job: apply
         steps:
           - task: TerraformTask@5
