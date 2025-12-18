@@ -42,9 +42,12 @@ stages:
         environmentServiceNameAzureRM: 'todosvc'
 
     - script: |
-        pip install checkov
-        checkov -d environment/dev
-      displayName: Security Scan
+        sudo apt update
+        sudo apt install -y pipx
+        pipx ensurepath
+        pipx install checkov
+        checkov -d environment
+      displayName: Security Scan (Checkov)
 
   - job: manualvalidation
     displayName: Manual Approval
