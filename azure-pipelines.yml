@@ -42,7 +42,10 @@ stages:
         environmentServiceNameAzureRM: 'todosvc'
 
     - script: |
-        python3 -m pip install checkov
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install checkov
         checkov -d environment/dev
       displayName: Security Scan (Checkov)
 
